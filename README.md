@@ -15,6 +15,24 @@ meeting_summarizer
 
     └── generate_meeting_minutes.py module to generate meeting minutes 
 
+    └── gpt_indexing_inferencing.py  inference module to run the GPT indexed model
+
+    └── gpt-neo.ipynb      notebook for finetuning the gpt-j model on medical dataset
+
+    └── gpt_meeting.txt     corpus of the meeting transcription and minutes generated
+
+    └── index.json  json file of the index generated from chatGPT
+
+    └── meeting_minutes_data.csv    csv data of the minutes and meeting transcription
+
+    └── meeting_summary_nltk.py     module to generate minutes using nltk and chatGPT
+
+    └── README.md           README file for the repo
+
+    └── streamlit_app.py        streamlit web application to run the meeting minute generator
+
+
+
 
 
 
