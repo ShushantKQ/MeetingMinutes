@@ -37,7 +37,7 @@ def construct_index(directory_path):
     chunk_size_limit = 5000
 
     prompt_helper = PromptHelper(max_input_size, num_outputs, max_chunk_overlap, chunk_size_limit=chunk_size_limit)
-    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="gpt-3.5-turbo", max_tokens=num_outputs,openai_api_key="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"))
+    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="gpt-3.5-turbo", max_tokens=num_outputs,openai_api_key=""))
     documents = SimpleDirectoryReader(directory_path).load_data()
     index = GPTSimpleVectorIndex(documents, llm_predictor=llm_predictor, prompt_helper=prompt_helper)
     index.save_to_disk('index_gpt_3.json')
