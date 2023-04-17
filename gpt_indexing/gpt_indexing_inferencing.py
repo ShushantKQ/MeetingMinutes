@@ -1,7 +1,8 @@
 from time import perf_counter
-from langchain import OpenAI
+# from langchain import OpenAI
 from gpt_index import GPTSimpleVectorIndex
 from nltk import word_tokenize
+from datetime import datetime, timezone, timedelta
 
 
 
@@ -25,22 +26,34 @@ def break_up_file_to_chunks(input_text, chunk_size=4096, overlap_size=100):
     return list(break_up_file(tokens, chunk_size, overlap_size))
 
 
-def generate_meeting_minutes(meeting_transcription,input_index="index.json"):
+def generate_meeting_minutes(meeting_transcription,input_index="index_gpt_3.json"):
     """
     Gneerate minutes of the given meeting transcription by loading the index from index file trained from corpus
     params:
         meeting_transcription : str: transcription of the meeting
         input_index : file: trained index file
     """
+    today = datetime.now(timezone(timedelta(hours=9), 'JST')).strftime('%Y-%m-%d')
     index = GPTSimpleVectorIndex.load_from_disk(input_index)
     chunks = break_up_file_to_chunks(meeting_transcription)
     response = []
     prompt_response = []
     for i, chunk in enumerate(chunks):
-        query = "Below is the transcribed text of the meeting recording. Generate an appropriate minute for the meeting with the memebers of the meeting, agenda of the meeting, summary of the meeting, and actions items from the meeting.\n" + chunk[i]
+        default_prompt = """
+        Please summarize the above sentences in the following format.
+             [Meeting name (complete in one line)]
+             [date and time] {today}
+             [Participant/Affiliation]
+             [Overall summary] (300 characters),
+             [Table of contents] (Table of contents in chronological order, maximum 5)
+             [contents] (contents for each table of contents),
+             [decisions] (items),
+             [next action] (bullets)
+             In Japanese please.
+        """
+        query = chunk[i] + default_prompt
         response = index.query(query, response_mode="default")
         prompt_response.append(response.response)
-        # breakpoint()
     query = "Consolidate these meeting minutes: " + str(prompt_response)
     final_response = index.query(query, response_mode="default")
     return final_response.response
